@@ -9,32 +9,43 @@
 char *_wich(const char *command)
 {
 	struct stat st;
-	char *path, *dir, *fullpath;
+	char *path, *temp, *dir, *fullpath;
 
 	if (!command)
 		return (NULL);
-
+	if (strchr(command, '/') != NULL)
+	{
+		if (stat(command, &st) == 0)
+			return (strdup(command));
+		return (NULL);
+	}
 	path = _getenv("PATH");
 	if (!path)
 		return (NULL);
 
-	dir = strtok(path, ":");
+	temp = strdup(path);
+	if (!temp)
+		return (NULL);
+
+	dir = strtok(temp, ":");
 	while (dir)
 	{
 		fullpath = malloc(strlen(dir) + strlen(command) + 2);
 		if (!fullpath)
 		{
-			free(path);
+			free(temp);
 			return (NULL);
 		}
-
+		sprintf(fullpath, "%s/%s", dir, command);
 		if (stat(fullpath, &st) == 0)
 		{
+			free(temp);
 			return (fullpath);
 		}
 
 		free(fullpath);
 		dir = strtok(NULL, ":");
 	}
+	free(temp);
 	return (NULL);
 }

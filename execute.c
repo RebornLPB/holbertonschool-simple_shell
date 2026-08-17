@@ -16,6 +16,7 @@ void execute_command(char **av, char *buffer)
 	commandpath = _wich(av[0]);
 	if (commandpath == NULL)
 	{
+		perror(av[0]);
 		free(av);
 		return;
 	}
@@ -31,7 +32,7 @@ void execute_command(char **av, char *buffer)
 		}
 		if (child == 0)
 		{
-			if (execve(av[0], av, environ) == -1)
+			if (execve(commandpath, av, environ) == -1)
 			{
 				perror("./shell");
 				free(commandpath);
