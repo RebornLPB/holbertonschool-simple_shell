@@ -25,6 +25,8 @@ int main(void)
 			printf("\n");
 			break;
 		}
+		if (buffer[characters - 1] == '\n')
+			buffer[characters - 1] = '\0';
 		av = split_string(buffer);
 		if (av == NULL || av[0] == NULL)
 		{
