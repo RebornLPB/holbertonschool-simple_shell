@@ -11,11 +11,20 @@ void execute_command(char **av, char *buffer)
 {
 	pid_t child;
 	int status;
+	char *commandpath;
+
+	commandpath = _wich(av[0]);
+	if (commandpath == NULL)
+	{
+		free(av);
+		return;
+	}
 
 	child = fork();
 		if (child == -1)
 		{
 			perror("Fork failed");
+			free(commandpath);
 			free(av);
 			free(buffer);
 			exit(1);
@@ -25,6 +34,7 @@ void execute_command(char **av, char *buffer)
 			if (execve(av[0], av, environ) == -1)
 			{
 				perror("./shell");
+				free(commandpath);
 				free(av);
 				free(buffer);
 				exit(1);
@@ -33,6 +43,7 @@ void execute_command(char **av, char *buffer)
 		else
 		{
 			wait(&status);
+			free(commandpath);
 			free(av);
 		}
 }

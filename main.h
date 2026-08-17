@@ -11,6 +11,8 @@
 
 char **split_string(char *str);
 void execute_command(char **av, char *buffer);
+char *_getenv(const char *name);
+char *_wich(const char *command);
 extern char **environ;
 
 #endif
