@@ -6,6 +6,8 @@
  * and waits for the child process to finish before freeing allocated data.
  * @av: Array of arguments for the command to execute.
  * @buffer: Input buffer that is freed when execution finishes.
+ * @compt: Command count used in error messages.
+ * Return: Exit status of the executed command, or 127 if command not found.
  */
 int execute_command(char **av, char *buffer, int compt)
 {
@@ -18,16 +20,13 @@ int execute_command(char **av, char *buffer, int compt)
 	{
 		fprintf(stderr, "./hsh: %d: %s: not found\n", compt, av[0]);
 		free(av);
-		return(127);
+		return (127);
 	}
-
 	child = fork();
 		if (child == -1)
 		{
 			perror("Fork failed");
-			free(commandpath);
-			free(av);
-			free(buffer);
+			free_all(commandpath, av, buffer);
 			exit(1);
 		}
 		if (child == 0)
@@ -35,9 +34,7 @@ int execute_command(char **av, char *buffer, int compt)
 			if (execve(commandpath, av, environ) == -1)
 			{
 				perror("./shell");
-				free(commandpath);
-				free(av);
-				free(buffer);
+				free_all(commandpath, av, buffer);
 				exit(1);
 			}
 			return (0);
@@ -49,5 +46,6 @@ int execute_command(char **av, char *buffer, int compt)
 			free(av);
 			if (WIFEXITED(status))
 				return (WEXITSTATUS(status));
+			return (0);
 		}
 }
