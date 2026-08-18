@@ -11,7 +11,7 @@ int handle_exit(char **av, char *buffer)
 {
 	if (strcmp(av[0], "exit") == 0)
 	{
-		free_all(av, buffer);
+		free_all(av, buffer, NULL);
 		exit(0);
 	}
 	return (0);
