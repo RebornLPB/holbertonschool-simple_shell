@@ -10,7 +10,7 @@
 #include <sys/stat.h>
 
 char **split_string(char *str);
-void execute_command(char **av, char *buffer);
+int execute_command(char **av, char *buffer, int compt);
 char *_getenv(const char *name);
 char *_wich(const char *command);
 extern char **environ;
