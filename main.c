@@ -37,7 +37,7 @@ int main(void)
 			free(av);
 			continue;
 		}
-		handle_exit(av, buffer);
+		handle_exit(av, buffer, exit_code);
 		exit_code = execute_command(av, buffer, compt);
 	}
 	free(buffer);
