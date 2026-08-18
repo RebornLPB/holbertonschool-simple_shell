@@ -13,6 +13,7 @@ char **split_string(char *str);
 int execute_command(char **av, char *buffer, int compt);
 char *_getenv(const char *name);
 char *_wich(const char *command);
+int handle_exit(char **av, char *buffer);
 extern char **environ;
 
 #endif
