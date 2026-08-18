@@ -13,7 +13,7 @@ int handle_exit(char **av, char *buffer)
 	{
 		free(av);
 		free(buffer);
-		exit(2);
+		exit(0);
 	}
 	return (0);
 }

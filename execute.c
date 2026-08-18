@@ -47,6 +47,7 @@ int execute_command(char **av, char *buffer, int compt)
 			wait(&status);
 			free(commandpath);
 			free(av);
-			return (0);
+			if (WIFEXITED(status))
+				return (WEXITSTATUS(status));
 		}
 }

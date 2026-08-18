@@ -38,7 +38,6 @@ int main(void)
 			continue;
 		}
 		handle_exit(av, buffer);
-
 		exit_code = execute_command(av, buffer, compt);
 	}
 	free(buffer);
