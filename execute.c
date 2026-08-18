@@ -7,7 +7,7 @@
  * @av: Array of arguments for the command to execute.
  * @buffer: Input buffer that is freed when execution finishes.
  */
-void execute_command(char **av, char *buffer)
+int execute_command(char **av, char *buffer, int compt)
 {
 	pid_t child;
 	int status;
@@ -16,9 +16,9 @@ void execute_command(char **av, char *buffer)
 	commandpath = _wich(av[0]);
 	if (commandpath == NULL)
 	{
-		perror(av[0]);
+		fprintf(stderr, "./hsh: %d: %s: not found\n", compt, av[0]);
 		free(av);
-		return;
+		return(127);
 	}
 
 	child = fork();
@@ -40,11 +40,13 @@ void execute_command(char **av, char *buffer)
 				free(buffer);
 				exit(1);
 			}
+			return (0);
 		}
 		else
 		{
 			wait(&status);
 			free(commandpath);
 			free(av);
+			return (0);
 		}
 }
