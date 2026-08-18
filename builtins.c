@@ -17,3 +17,24 @@ int handle_exit(char **av, char *buffer, int exit_code)
 	}
 	return (0);
 }
+
+/**
+ * handle_env - prints the current environment variables.
+ * @av: array of arguments passed to the command.
+ *
+ * Return: 1 if the command is env, otherwise 0.
+ */
+int handle_env(char **av)
+{
+	int i;
+
+	if (strcmp(av[0], "env") == 0)
+	{
+		for (i = 0; environ[i] != NULL; i++)
+		{
+			printf("%s\n", environ[i]);
+		}
+		return (1);
+	}
+	return (0);
+}

@@ -18,7 +18,6 @@ int main(void)
 	{
 		if (isatty(STDIN_FILENO))
 			printf("$ ");
-
 		fflush(stdout);
 		characters = getline(&buffer, &bufsize, stdin);
 
@@ -38,6 +37,12 @@ int main(void)
 			continue;
 		}
 		handle_exit(av, buffer, exit_code);
+		if (handle_env(av))
+		{
+			free(av);
+			exit_code = 0;
+			continue;
+		}
 		exit_code = execute_command(av, buffer, compt);
 	}
 	free(buffer);
