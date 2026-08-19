@@ -1,0 +1,137 @@
+.TH HSH 1 "August 2026" "1.0" "Holberton School Simple Shell Manual"
+.SH NAME
+hsh \- simple UNIX command interpreter
+.SH SYNOPSIS
+.B hsh
+.SH DESCRIPTION
+.B hsh
+is a simple UNIX command line interpreter. It reads commands from
+either an interactive terminal or a non-interactive stream (such as
+a pipe or a file redirection), executes them, and repeats this
+process until it receives an end-of-file condition or the
+.B exit
+built-in is invoked.
+.PP
+When
+.B hsh
+is run from a terminal, it displays a prompt
+.RB ( "$ " )
+and waits for the user to type a command. When it is not connected
+to a terminal (for example when its standard input comes from a
+pipe), no prompt is displayed.
+.PP
+A command line is read until a newline character is encountered. It
+is then split into words, and the first word is treated as the name
+of the command to execute; the remaining words are passed to that
+command as arguments.
+.SH COMMAND EXECUTION
+If the command name contains a
+.B /
+character, it is treated as a relative or absolute path, and
+.B hsh
+attempts to execute it directly at that location.
+.PP
+Otherwise,
+.B hsh
+searches for an executable file with that name in each of the
+directories listed in the
+.B PATH
+environment variable, in the order they appear, separated by
+.BR : .
+The first matching executable found is used. If no matching
+executable is found in any directory of
+.BR PATH ,
+.B hsh
+prints an error message of the form:
+.PP
+.RS
+.I program_name: line_number: command: not found
+.RE
+.PP
+to the standard error stream, and continues to the next command with
+an exit status of 127. In this case, no child process is created.
+.SH BUILTIN COMMANDS
+.B hsh
+implements the following commands internally, without searching
+.BR PATH :
+.TP
+.B exit
+Exits the shell. The exit status is that of the last command
+executed before
+.B exit
+was called, or 0 if no command has been executed yet.
+.TP
+.B env
+Prints the current environment, one variable per line, in the
+format
+.IR NAME=value .
+.SH EXIT STATUS
+.B hsh
+returns the exit status of the last command it executed. If the
+command was not found,
+.B hsh
+uses the conventional shell exit status of 127. If a command
+terminates due to a signal, or if
+.B hsh
+itself encounters a fatal internal error (such as a failed
+.BR fork (2)),
+other non-zero values may be returned.
+.SH ENVIRONMENT
+.TP
+.B PATH
+A colon-separated list of directories that
+.B hsh
+searches, in order, to locate an executable file when the command
+name does not contain a
+.B /
+character.
+.SH END-OF-FILE HANDLING
+When
+.B hsh
+encounters an end-of-file condition on its standard input
+(typically triggered by pressing
+.B Ctrl-D
+in interactive mode, or by the end of a piped input), it exits
+cleanly, using the exit status of the last command executed.
+.SH EXAMPLES
+.PP
+Interactive use:
+.RS
+.nf
+$ ./hsh
+$ /bin/ls
+file1  file2
+$ ls
+file1  file2
+$ exit
+.fi
+.RE
+.PP
+Non-interactive use:
+.RS
+.nf
+$ echo "/bin/ls" | ./hsh
+file1  file2
+.fi
+.RE
+.SH BUGS
+.B hsh
+does not support command chaining
+.RB ( ; ", " && ", " || ),
+pipes
+.RB ( | ),
+I/O redirection
+.RB ( < ", " > ),
+comments
+.RB ( # ),
+variable substitution, quoting, or other shell metacharacters. It
+handles only single, simple command lines.
+.SH AUTHOR
+.nf
+Reborn <reborndiscord@gmx.fr>
+The TO <theovinc@gmail.com>
+.SH SEE ALSO
+.BR sh (1),
+.BR execve (2),
+.BR fork (2),
+.BR wait (2)
