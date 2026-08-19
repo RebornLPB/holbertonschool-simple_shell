@@ -1,109 +1,78 @@
 # C - Simple Shell
 
 ## Description
-This project is a custom UNIX command-line interpreter (shell) implemented in C as part of the **Holberton School** curriculum. Developed in a pair programming environment by **RebornLPB** and **Theo Vincenzi**, this program replicates the basic core functionalities of `sh` (`/bin/sh`).
 
-It reads command lines from standard input, parses execution arguments, searches for executable files within the `PATH` environment variable, handles process creation via system calls (`fork`, `execve`, `wait`), manages EOF (`Ctrl+D`), and executes built-in commands like `exit` and `env`.
+This project is a custom UNIX command-line interpreter (shell) implemented in C as part of the **Holberton School** curriculum. It replicates the basic core functionalities of `sh` (`/bin/sh`): it reads a command line from standard input, splits it into arguments, searches for the corresponding executable in the `PATH`, and runs it in a child process via `fork` and `execve`.
 
-All source files adhere strictly to the **Betty coding style**.
+It supports both interactive mode (with a `$ ` prompt) and non-interactive mode (piped input), and implements the `exit` and `env` builtins.
 
-## 📝 Learning Objectives
+## Learning Objectives
+
 * Understand how a command-line interpreter works under the hood.
-* Master process creation and management using system calls: `fork`, `execve`, `wait`, `waitpid`, and `exit`.
-* Handle the environment array (`environ`) and manipulate the `PATH` variable to find binary executables.
-* Understand the difference between system calls and standard library functions.
-* Master memory allocation and cleanup to prevent memory leaks in long-running processes.
-* Handle EOF (`Ctrl+D`) gracefully and intercept signals like `SIGINT` (`Ctrl+C`).
+* Master process creation and management using `fork`, `execve`, and `wait`.
+* Handle the `environ` array and use the `PATH` variable to locate executables.
+* Manage dynamic memory allocation and cleanup to avoid leaks.
+* Handle end of file (`Ctrl+D`) gracefully.
 
-## 🛠️ Requirements & Engineering Constraints
-* **OS:** Ubuntu 20.04 LTS
-* **Compiler:** `gcc` (Compilation flags: `-Wall -Werror -Wextra -pedantic -std=gnu89`)
-* **Coding Style:** 100% compliant with the Betty Style Guide (`betty-style.pl` and `betty-doc.pl`).
-* **Memory Safety:** Zero memory leaks verified using Valgrind.
-* **Allowed Functions & System Calls:** `access`, `chdir`, `close`, `closedir`, `execve`, `exit`, `_exit`, `fflush`, `fork`, `free`, `getcwd`, `getline`, `getpid`, `isatty`, `kill`, `malloc`, `open`, `opendir`, `perror`, `read`, `readdir`, `signal`, `stat` (`__xstat`), `lstat` (`__lxstat`), `fstat` (`__fxstat`), `strtok`, `wait`, `waitpid`, `wait3`, `wait4`, `write`.
-
-## 📁 Repository Structure
-
-```text
-.
-├── shell.h           # Main header file containing structures, macros, and prototypes
-├── main.c            # Entry point for interactive and non-interactive shell modes
-├── parser.c          # Tokenization logic using strtok to parse command arguments
-├── executor.c        # Process execution engine (fork, execve, wait status handling)
-├── path.c            # Path lookup resolution engine traversing PATH directories
-├── builtins.c        # Custom built-in command handlers (exit, env)
-├── helpers.c         # String utilities and memory allocation helper routines
-├── man_1_simple_shell# Custom manual page for the simple shell
-└── README.md         # Project documentation
-```
-
----
-
-## 💻 Interactive vs Non-Interactive Mode
-
-The shell supports two modes of execution:
-
-### Interactive Mode
-Run the executable directly from your terminal. It displays a prompt `($ )`, reads your inputs, executes commands, and waits for further commands until exited:
-
-```bash
-$ ./hsh
-($ ) /bin/ls
-main.c  parser.c  executor.c  shell.h  hsh
-($ ) pwd
-/home/user/holbertonschool-simple_shell
-($ ) exit
-$
-```
-
-### Non-Interactive Mode
-Pipe command strings or redirect input files directly into the shell:
-
-```bash
-$ echo "/bin/ls" | ./hsh
-main.c  parser.c  executor.c  shell.h  hsh
-$
-$ echo "pwd" | ./hsh
-/home/user/holbertonschool-simple_shell
-$
-```
-
----
-
-## 🚀 Compilation & Installation
-
-To compile the shell, run the following command in your terminal:
+## Compilation
 
 ```bash
 gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh
 ```
 
-### Testing Memory Safety with Valgrind
-To verify that all dynamically allocated strings, buffers, and env vectors are freed cleanly upon termination:
+## Usage
 
-```bash
-valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all ./hsh
+### Interactive mode
+
+```console
+$ ./hsh
+$ /bin/ls
+main.c  main.h  execute.c  builtins.c  hsh
+$ pwd
+/home/user/holbertonschool-simple_shell
+$ exit
 ```
 
-Expected output signature:
-All heap blocks were freed -- no leaks are possible
+### Non-interactive mode
 
----
-
-## 📖 Manual Page Access
-
-To view the custom man page for the shell:
-
-```bash
-man ./man_1_simple_shell
+```console
+$ echo "/bin/ls" | ./hsh
+main.c  main.h  execute.c  builtins.c  hsh
+$ echo "pwd" | ./hsh
+/home/user/holbertonschool-simple_shell
 ```
 
----
+## Flowchart
 
-## 👥 Authors & Acknowledgments
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/flowchart-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="assets/flowchart-light.png">
+  <img alt="Simple Shell flowchart" src="assets/flowchart-light.png">
+</picture>
 
-This project was developed as a pair programming effort by:
+## Builtins
 
-* **Student 1:** [RebornLPB](https://github.com/RebornLPB)
-* **Student 2:** [Theo Vincenzi](https://github.com/theovincenzi) *(or update with his exact GitHub link)*
-* **School:** [Holberton School](https://www.holbertonschool.com/)
+| Command | Description |
+| --- | --- |
+| `exit` | Exits the shell. |
+| `env` | Prints the current environment. |
+
+## File Structure
+
+| File | Description |
+| --- | --- |
+| [main.h](main.h) | Header file with structures, macros, and function prototypes. |
+| [main.c](main.c) | Entry point; reads input and drives the main shell loop. |
+| [split_string.c](split_string.c) | Splits a command line into tokens (arguments). |
+| [wich.c](wich.c) | Searches `PATH` for a command and returns its full path. |
+| [_getenv.c](_getenv.c) | Retrieves the value of an environment variable. |
+| [execute.c](execute.c) | Forks a child process and executes the command via `execve`. |
+| [builtins.c](builtins.c) | Implements the `exit` and `env` builtins. |
+| [freeall.c](freeall.c) | Helper to free multiple allocated pointers at once. |
+
+## Authors
+
+* **The TO** - [theovinc@gmail.com](mailto:theovinc@gmail.com)
+* **Reborn** - [reborndiscord@gmx.fr](mailto:reborndiscord@gmx.fr)
+
+Holberton School project.
