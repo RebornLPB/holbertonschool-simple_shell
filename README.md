@@ -69,6 +69,8 @@ $ echo "pwd" | ./hsh
 | [execute.c](execute.c) | Forks a child process and executes the command via `execve`. |
 | [builtins.c](builtins.c) | Implements the `exit` and `env` builtins. |
 | [freeall.c](freeall.c) | Helper to free multiple allocated pointers at once. |
+| [man_1_simple_shell](man_1_simple_shell) | Manual page of the shell (`man ./man_1_simple_shell`). |
+| [AUTHORS](AUTHORS) | List of the contributors to the repository. |
 
 ## Authors
 
